@@ -5,6 +5,7 @@ This module contains the zoom_array function
 
 from typing import Tuple, List
 
+
 def zoom_array(lst: Tuple, factor: int = 2) -> List:
     '''
     zoom_array
