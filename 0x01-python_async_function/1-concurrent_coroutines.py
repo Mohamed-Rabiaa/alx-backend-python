@@ -4,11 +4,12 @@ This module contains the wait_n function
 """
 
 import asyncio
+import typing
 
 wait_random = __import__('0-basic_async_syntax').wait_random
 
 
-async def wait_n(n, max_delay):
+async def wait_n(n: int, max_delay: int) -> typing.List[float]:
     """
     Run 'wait_random' function 'n' times concurrently and return the list
     of delays in the order they complete.

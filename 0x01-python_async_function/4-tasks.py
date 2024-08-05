@@ -10,7 +10,7 @@ import typing
 task_wait_random = __import__('3-tasks').task_wait_random
 
 
-async def task_wait_n(n: int, max_delay: int) -> typing.List:
+async def task_wait_n(n: int, max_delay: int) -> typing.List[float]:
     """
     Create and run 'n' asyncio Tasks for the 'wait_random' coroutine
     concurrently, and return a sorted list of the results.
