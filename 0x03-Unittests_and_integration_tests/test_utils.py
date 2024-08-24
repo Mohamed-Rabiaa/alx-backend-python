@@ -6,7 +6,7 @@ This module contains the TestAccessNestedMap class
 from parameterized import parameterized
 from unittest import TestCase
 from utils import access_nested_map
-from typing import Mapping, Sequence, Any
+from typing import Dict, Tuple, Union, Any
 
 
 class TestAccessNestedMap(TestCase):
@@ -18,8 +18,13 @@ class TestAccessNestedMap(TestCase):
         ("second_case", {"a": {"b": 2}}, ("a",), {"b": 2}),
         ("third_case", {"a": {"b": 2}}, ("a", "b"), 2),
         ])
-    def test_access_nested_map(self, name: str, nested_map: Mapping,
-                               path: Sequence, expected: Any):
+    def test_access_nested_map(
+            self,
+            name: str,
+            nested_map: Dict[str, Any],
+            path: Tuple[str, ...],
+            expected: Union[Dict[str, Any], int, Any]):
+
         """
         Test the access_nested_map function.
 
@@ -51,8 +56,11 @@ class TestAccessNestedMap(TestCase):
         ("path has 2 keys & nested_map has one", {"a": 1}, ("a", "b"),
          KeyError),
         ])
-    def test_access_nested_map_exception(self, name: str, nested_map: Mapping,
-                                         path: Sequence, expected: Any):
+    def test_access_nested_map_exception(
+            self,
+            name: str, nested_map: Dict[str, Any],
+            path: Tuple[str, ...],
+            expected: Union[Dict[str, Any], int, Any]):
         """
         Test the access_nested_map function for KeyError exceptions.
 
