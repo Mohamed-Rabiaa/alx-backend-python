@@ -11,7 +11,7 @@ from typing import Mapping, Sequence, Any
 
 class TestAccessNestedMap(TestCase):
     """
-    This class tests the access_nested_map function
+    TestAccessNestedMap class
     """
     @parameterized.expand([
         ("first_case", {"a": 1}, ("a",), 1),
@@ -19,8 +19,22 @@ class TestAccessNestedMap(TestCase):
         ("third_case", {"a": {"b": 2}}, ("a", "b"), 2),
         ])
     def test_access_nested_map(self, name: str, nested_map: Mapping,
-                               path: Sequence, expected: Any) -> None:
+                               path: Sequence, expected: Any):
         """
-        Tests that method access_nested_map returns what it is supposed to
+        This class tests the access_nested_map function
         """
         self.assertEqual(access_nested_map(nested_map, path), expected)
+
+    @parameterized.expand([
+        ("empty nested_map", {}, ("a",), KeyError),
+        ("path has 2 keys & nested_map has one", {"a": 1}, ("a", "b"),
+         KeyError),
+        ])
+    def test_access_nested_map_exception(self, name: str, nested_map: Mapping,
+                                         path: Sequence, expected: Any):
+        """
+        Tests that a KeyError is raised for the following inputs:
+           nested_map={}, path=("a",)
+           nested_map={"a": 1}, path=("a", "b")
+        """
+        self.assertRaises(access_nested_map(nested_map, path))
