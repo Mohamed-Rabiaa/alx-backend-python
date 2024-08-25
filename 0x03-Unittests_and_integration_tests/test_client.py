@@ -33,3 +33,12 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(client.org(), result)
         mock_get_json.assert_called_once_with(
             client.ORG_URL.format(org=org_name))
+
+    def test_public_repos_url(self) -> None:
+        """
+        test_public_repos_url
+        """
+        with patch.object(GithubOrgClient, '_public_repos_url') as mock_method:
+            mock_method.return_value = {'name': 'ALX'}
+            self.assertEqual(GithubOrgClient._public_repos_url(),
+                             {'name': 'ALX'})
