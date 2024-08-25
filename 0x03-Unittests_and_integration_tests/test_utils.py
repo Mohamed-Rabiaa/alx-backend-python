@@ -5,7 +5,8 @@ This module contains the TestAccessNestedMap class
 
 from parameterized import parameterized
 from unittest import TestCase
-from utils import access_nested_map
+from unittest.mock import patch, Mock
+from utils import access_nested_map, get_json
 from typing import Dict, Tuple, Union, Any
 
 
@@ -17,7 +18,7 @@ class TestAccessNestedMap(TestCase):
         ("first_case", {"a": 1}, ("a",), 1),
         ("second_case", {"a": {"b": 2}}, ("a",), {"b": 2}),
         ("third_case", {"a": {"b": 2}}, ("a", "b"), 2),
-        ])
+    ])
     def test_access_nested_map(
             self,
             name: str,
@@ -55,12 +56,12 @@ class TestAccessNestedMap(TestCase):
         ("empty nested_map", {}, ("a",), KeyError),
         ("path has 2 keys & nested_map has one", {"a": 1}, ("a", "b"),
          KeyError),
-        ])
+    ])
     def test_access_nested_map_exception(
             self,
             name: str, nested_map: Dict[str, Any],
             path: Tuple[str, ...],
-            expected: Union[Dict[str, Any], int, Any]):
+            exception: Exception) -> None:
         """
         Test the access_nested_map function for KeyError exceptions.
 
@@ -85,5 +86,29 @@ class TestAccessNestedMap(TestCase):
             A KeyError is raised for each test case when the specified path
             does not exist.
         """
-        with self.assertRaises(KeyError):
+        with self.assertRaises(exception):
             access_nested_map(nested_map, path)
+
+
+class TestGetJson(TestCase):
+    """
+    TestGetJson class
+    Tests the get_json function by mocking its behavior.
+    """
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False}),
+    ])
+    def test_get_json(
+            self,
+            test_url: str,
+            test_payload: Dict[str, bool]) -> None:
+        """
+        Test the get_json function.
+        Mocks the get_json function and verifies that it returns
+        the expected payload.
+        """
+        with patch('requests.get') as mock_method:
+            mock_method.return_value.json.return_value = test_payload
+            self.assertEqual(get_json(test_url), test_payload)
+            mock_method.assert_called_once_with(test_url)
