@@ -3,12 +3,13 @@
 test_client module
 """
 
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 import unittest
 from unittest.mock import patch, MagicMock, PropertyMock
 from utils import get_json
 from typing import Dict
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -77,3 +78,39 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         self.assertEqual(GithubOrgClient.has_license(repo, license_key),
                          result)
+
+
+@parameterized_class([
+    {
+        'org_payload': TEST_PAYLOAD[0][0],
+        'repos_payload': TEST_PAYLOAD[0][1],
+        'expected_repos': TEST_PAYLOAD[0][2],
+        'apache2_repos': TEST_PAYLOAD[0][3]
+    }
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    TestIntegrationGithubOrgClient
+    """
+
+    def setUpClass(cls):
+        """
+        setUpClass
+        """
+        url_payload = {
+            'https://api.github.com/orgs/google': cls.org_payload,
+            'https://api.github.com/orgs/google/repos': cls.repos_payload,
+        }
+
+        def get_payload(url):
+            if url in url_payload:
+                return Mock(**{'json.return_value': url_payload[url]})
+            return HTTPError
+        cls.get_patcher = patch('requests.get', side_effect=get_payload)
+        cls.get_patcher.start()
+
+    def tearDownClass(cls):
+        """
+        tearDownClass
+        """
+        cls.get_patcher.stop()
