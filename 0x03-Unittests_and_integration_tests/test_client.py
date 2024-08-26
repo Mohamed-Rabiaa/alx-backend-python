@@ -92,8 +92,8 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
     TestIntegrationGithubOrgClient
     """
-
-    def setUpClass(cls):
+    @classmethod
+    def setUpClass(cls) -> None:
         """
         setUpClass
         """
@@ -109,7 +109,8 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher = patch('requests.get', side_effect=get_payload)
         cls.get_patcher.start()
 
-    def tearDownClass(cls):
+    @classmethod
+    def tearDownClass(cls) -> None:
         """
         tearDownClass
         """
