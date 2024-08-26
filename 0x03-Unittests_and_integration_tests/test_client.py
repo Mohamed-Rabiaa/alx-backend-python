@@ -5,7 +5,7 @@ test_client module
 
 from parameterized import parameterized
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, PropertyMock
 from utils import get_json
 from typing import Dict
 from client import GithubOrgClient
@@ -38,7 +38,30 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         test_public_repos_url
         """
-        with patch.object(GithubOrgClient, '_public_repos_url') as mock_method:
-            mock_method.return_value = {'name': 'ALX'}
-            self.assertEqual(GithubOrgClient._public_repos_url(),
-                             {'name': 'ALX'})
+        with patch('client.GithubOrgClient.org',
+                   new_callable=PropertyMock) as mock_method:
+            mock_method.return_value = {'repos_url': 'url'}
+            client = GithubOrgClient('org')
+            self.assertEqual(client._public_repos_url,
+                             'url')
+
+    @patch('client.get_json')
+    def test_public_repos(self, mock_get_json: MagicMock):
+        """
+        test_public_repos
+        """
+        list_payload = [
+            {'name': 'repo1'},
+            {'name': 'repo2'},
+            {'name': 'repo3'}
+        ]
+        mock_get_json.return_value = list_payload
+        client = GithubOrgClient('org')
+
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as mock_property:
+            mock_property.return_value = 'url'
+            result = [repo["name"] for repo in list_payload]
+            self.assertEqual(client.public_repos(), result)
+            mock_property.assert_called_once()
+        mock_get_json.assert_called_once()
