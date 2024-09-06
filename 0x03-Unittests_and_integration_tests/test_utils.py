@@ -15,16 +15,15 @@ class TestAccessNestedMap(TestCase):
     TestAccessNestedMap class
     """
     @parameterized.expand([
-        ("first_case", {"a": 1}, ("a",), 1),
-        ("second_case", {"a": {"b": 2}}, ("a",), {"b": 2}),
-        ("third_case", {"a": {"b": 2}}, ("a", "b"), 2),
+        ({"a": 1}, ("a",), 1),
+        ({"a": {"b": 2}}, ("a",), {"b": 2}),
+        ({"a": {"b": 2}}, ("a", "b"), 2),
     ])
     def test_access_nested_map(
             self,
-            name: str,
-            nested_map: Dict[str, Any],
-            path: Tuple[str, ...],
-            expected: Union[Dict[str, Any], int, Any]):
+            nested_map: Dict,
+            path: Tuple[str],
+            expected: Union[Dict, int]) -> None:
 
         """
         Test the access_nested_map function.
@@ -53,14 +52,13 @@ class TestAccessNestedMap(TestCase):
         self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([
-        ("empty nested_map", {}, ("a",), KeyError),
-        ("path has 2 keys & nested_map has one", {"a": 1}, ("a", "b"),
-         KeyError),
+        ({}, ("a",), KeyError),
+        ({"a": 1}, ("a", "b"), KeyError),
     ])
     def test_access_nested_map_exception(
             self,
-            name: str, nested_map: Dict[str, Any],
-            path: Tuple[str, ...],
+            nested_map: Dict,
+            path: Tuple[str],
             exception: Exception) -> None:
         """
         Test the access_nested_map function for KeyError exceptions.
