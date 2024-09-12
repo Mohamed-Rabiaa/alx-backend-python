@@ -24,7 +24,6 @@ class TestAccessNestedMap(TestCase):
             nested_map: Dict,
             path: Tuple[str],
             expected: Union[Dict, int]) -> None:
-
         """
         Test the access_nested_map function.
 
@@ -116,6 +115,7 @@ class TestMemoize(TestCase):
     """
     Tests the memoize function
     """
+
     def test_memoize(self):
         """
         Tests the memoize function by mocking the a_method
