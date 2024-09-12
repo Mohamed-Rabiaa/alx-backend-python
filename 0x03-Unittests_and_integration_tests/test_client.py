@@ -79,7 +79,6 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(GithubOrgClient.has_license(repo, license_key),
                          result)
 
-
 @parameterized_class([
     {
         'org_payload': TEST_PAYLOAD[0][0],
@@ -115,3 +114,10 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         tearDownClass
         """
         cls.get_patcher.stop()
+
+    def test_public_repos_with_license(self) -> None:
+        """
+        test_public_repos_with_license
+        """
+        self.assertEqual(GithubOrgClient('org').public_repos(license="apache-2.0"),
+                         self.apache2_repos)
